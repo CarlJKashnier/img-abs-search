@@ -1,0 +1,38 @@
+{
+  "name": "fcc-img",
+  "version": "1.0.0",
+  "description": "FreeCodeCamp Project Image Abs Layer with access DB and Bing image",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheDukeOfAwesome/img-abs-search.git"
+  },
+  "keywords": [
+    "FreeCodeCamp",
+    "Project",
+    "Image",
+    "Abs",
+    "Layer",
+    "with",
+    "access",
+    "DB",
+    "and",
+    "Bing",
+    "image"
+  ],
+  "author": "Carl J. Kashnier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TheDukeOfAwesome/img-abs-search/issues"
+  },
+  "homepage": "https://github.com/TheDukeOfAwesome/img-abs-search#readme",
+  "dependencies": {
+    "http": "0.0.0",
+    "mongodb": "^2.1.7",
+    "sanitize-caja": "^0.1.3",
+    "url": "^0.11.0"
+  }
+}
