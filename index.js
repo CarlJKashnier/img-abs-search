@@ -5,7 +5,7 @@ var http = require('http')
 var url = require('url')
 var mongo = require('mongodb')
 var sanitize = require('sanitize-caja')
-var bing = require('node-bing-api')
+var bing = require('node-bing-api')({accKey: process.env.BING_API})
 
 //https://frozen-ravine-19624.herokuapp.com/
 
@@ -18,7 +18,7 @@ if(parsedURL.path == '/favicon.ico'){return};
 if(parsedURL.path.substring(0, 9) == '\/api\/img\/') {
   console.log('true');
   var searchTerm = parsedURL.pathname.substring(9);
-  if(parsedURL.query.length == 0){
+  if(parsedURL.query == null){
     offset = 0;
   } else {
   if(parsedURL.query.substring(0,7) === "offset=" && !isNaN(parsedURL.path.substring(parsedURL.pathname.length + 8))) {
@@ -32,12 +32,26 @@ if(parsedURL.path.substring(0, 9) == '\/api\/img\/') {
   res.write(JSON.stringify({"error": "Malformed offset"}));
   res.end();
   return;
-}} else {
+}}}} else {
   res.writeHead(200, { 'Content-Type': 'application/json' });
   res.write(JSON.stringify({"error": "Malformed search query"}));
   res.end();
   return
-}}
+}
+searchTerm = searchTerm.replace(/%20/g, ' ');
+bing.images(searchTerm, function(err, resp, body){
+var toClientOut = []
+for(var i=0; i<10;i++){
+  var toPushObj = {"url": body.d.results[0].MediaUrl, "snippet": body.d.results[0].Title, "thumbnail": body.d.results[0].Thumbnail.MediaUrl, "context": body.d.results[0].SourceUrl}
+  toClientOut.push(toPushObj)
+}
+res.writeHead(200, { 'Content-Type': 'application/json' });
+res.write(JSON.stringify(toClientOut));
+res.end();
+})
+
+
+
 console.log(searchTerm + " " + offset);
 
 
