@@ -14,6 +14,11 @@ var server = http.createServer(function (req, res) {
 var parsedURL = url.parse(req.url)
   //trap favicon.ico traffic
 if(parsedURL.path == '/favicon.ico'){return};
+if(parsedURL.path == '/'){   res.writeHead(200, { 'Content-Type': 'text' });
+  res.write("To use this app - /api/img/SearchTerm[?offset=#] or to view recent searches /recent");
+  res.end();
+  return
+  };
   //done trapping favicon.ico
 //Check if valid request
 //Check if vaild pathname
