@@ -15,30 +15,37 @@ var parsedURL = url.parse(req.url)
   //trap favicon.ico traffic
 if(parsedURL.path == '/favicon.ico'){return};
   //done trapping favicon.ico
+//Check if valid request
+//Check if vaild pathname
 if(parsedURL.path.substring(0, 9) == '\/api\/img\/') {
-  console.log('true');
   var searchTerm = parsedURL.pathname.substring(9);
   if(parsedURL.query == null){
     offset = 0;
   } else {
+    //check if offset is good if not then return 0 for query
   if(parsedURL.query.substring(0,7) === "offset=" && !isNaN(parsedURL.path.substring(parsedURL.pathname.length + 8))) {
   var offset = parsedURL.path.substring(parsedURL.pathname.length + 8);
-  console.log("Is Int");
+  //Add Call to Search function
 } else {
   if(parsedURL.path.length == parsedURL.pathname.length){
-    offset = 0;
+    var offset = 0;
+    // Add call to Search function
   } else {
+    //send error
   res.writeHead(200, { 'Content-Type': 'application/json' });
   res.write(JSON.stringify({"error": "Malformed offset"}));
   res.end();
   return;
 }}}} else {
+  //send error
   res.writeHead(200, { 'Content-Type': 'application/json' });
   res.write(JSON.stringify({"error": "Malformed search query"}));
   res.end();
   return
 }
+//search if no error happend
 searchTerm = searchTerm.replace(/%20/g, ' ');
+//Break into own function to ensure does not interfere with the query for use
 bing.images(searchTerm, function(err, resp, body){
 var toClientOut = []
 for(var i=0; i<10;i++){
