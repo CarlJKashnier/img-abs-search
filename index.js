@@ -18,49 +18,47 @@ if(parsedURL.path == '/favicon.ico'){return};
 //Check if valid request
 //Check if vaild pathname
 if(parsedURL.path.substring(0, 9) == '\/api\/img\/') {
-  var searchTerm = parsedURL.pathname.substring(9);
+  var searchTerm = sanitize(parsedURL.pathname.substring(9).replace(/%20/g, ' '));
   if(parsedURL.query == null){
     offset = 0;
+    bingSearch(searchTerm, offset)
+    return
   } else {
     //check if offset is good if not then return 0 for query
   if(parsedURL.query.substring(0,7) === "offset=" && !isNaN(parsedURL.path.substring(parsedURL.pathname.length + 8))) {
   var offset = parsedURL.path.substring(parsedURL.pathname.length + 8);
+  console.log(searchTerm +' '+offset + " Second")
+      bingSearch(searchTerm, offset)
   //Add Call to Search function
 } else {
   if(parsedURL.path.length == parsedURL.pathname.length){
     var offset = 0;
+    console.log(searchTerm +' '+offset + " Third")
     // Add call to Search function
+    bingSearch()
   } else {
     //send error
   res.writeHead(200, { 'Content-Type': 'application/json' });
   res.write(JSON.stringify({"error": "Malformed offset"}));
   res.end();
   return;
-}}}} else {
-  //send error
+}}}}
+
+return
+//Function is in server so can use the REQ variable
+function bingSearch(searchTerm, offsetSearch){
+  bing.images(searchTerm, function(err, resp, body){
+  var toClientOut = []
+  for(var i=0; i<10;i++){
+    var toPushObj = {"url": body.d.results[0].MediaUrl, "snippet": body.d.results[0].Title, "thumbnail": body.d.results[0].Thumbnail.MediaUrl, "context": body.d.results[0].SourceUrl}
+    toClientOut.push(toPushObj)
+  }
   res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.write(JSON.stringify({"error": "Malformed search query"}));
+  res.write(JSON.stringify(toClientOut));
   res.end();
   return
+  })
 }
-//search if no error happend
-searchTerm = searchTerm.replace(/%20/g, ' ');
-//Break into own function to ensure does not interfere with the query for use
-bing.images(searchTerm, function(err, resp, body){
-var toClientOut = []
-for(var i=0; i<10;i++){
-  var toPushObj = {"url": body.d.results[0].MediaUrl, "snippet": body.d.results[0].Title, "thumbnail": body.d.results[0].Thumbnail.MediaUrl, "context": body.d.results[0].SourceUrl}
-  toClientOut.push(toPushObj)
-}
-res.writeHead(200, { 'Content-Type': 'application/json' });
-res.write(JSON.stringify(toClientOut));
-res.end();
-})
-
-
-
-console.log(searchTerm + " " + offset);
-
 
 });
 server.listen(process.env.PORT || 8888);
